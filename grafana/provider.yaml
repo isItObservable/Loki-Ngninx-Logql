@@ -1,0 +1,15 @@
+apiVersion: 1
+
+providers:
+  - name: "p"
+    orgId: 1
+    # <string, required> name of the dashboard folder. Required
+    folder: "demo"
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      # <string, required> path to dashboard files on disk. Required
+      path: /var/lib/grafana/dashboards
