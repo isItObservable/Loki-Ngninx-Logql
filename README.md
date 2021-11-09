@@ -3,7 +3,7 @@
 
 ##  How to observe a Ngninx ingress controller using Loki and Logql
 <p align="center"><img src="/image/loki_logo.png" width="40%" alt="Loki Logo" /></p>
-Repository containing the files for the Episode 12 of Is it Observable : K8s and Loki
+Repository containing the files for the Episode 11 of Is it Observable : Observability of Nginx Controller using Loki
 
 
 This repository showcase the usage of the Loki  by using GKE with :
