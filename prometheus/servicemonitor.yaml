@@ -3,18 +3,17 @@ kind: Service
 metadata:
   labels:
     app: ngninx-exporter
-  name: nginx-prom-service
+  name: nginx-prom-metrics
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/scheme: 'http'
     prometheus.io/port: '9113'
     prometheus.io/path: '/metrics'
 spec:
-  clusterIP: None
+  type: ClusterIP
   ports:
-    - name: metrics
-      port: 9113
-      targetPort: metrics
+    - port: 9113
+      name: prometheus
       protocol: TCP
   selector:
     app: ngninx-nginx-ingress
@@ -27,8 +26,8 @@ metadata:
     release: prometheus
 spec:
   endpoints:
-    - interval: 10s
-      port: metrics
+    - interval: 5s
+      port: prometheus
   selector:
     matchLabels:
       app: ngninx-exporter

@@ -145,9 +145,9 @@ kubectl apply -f prometheus/servicemonitor.yaml
 ```
 #### Install Loki with Promtail
 ```
-helm repo add loki https://grafana.github.io/loki/charts
+helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
-helm upgrade --install loki loki/loki-stack
+helm upgrade --install loki grafana/loki-stack
 ```
 #### Configure Grafana 
 In order to build a dashboard with data stored in Loki,we first need to add a new DataSource.
