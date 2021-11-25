@@ -11,7 +11,6 @@ name: prometheus-grafana-config-dashboards
 data:
   provider.yaml: |-
     apiVersion: 1
-
     providers:
       - name: "p"
         orgId: 1
