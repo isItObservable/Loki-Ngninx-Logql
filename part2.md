@@ -36,8 +36,8 @@ gcloud containr clusters create isitobservable \
 ```
 ### 3.Clone Github repo
 ```
-git clone https://github.com/isItObservable/Episode2--Kubernetes-Loki
-
+git clone https://github.com/isItObservable/Loki-Ngninx-Logql/
+cd Loki-Ngninx-Logql/
 ```
 ### 4. Install the ngninx controller
 #### 1. Deploy
