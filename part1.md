@@ -44,7 +44,7 @@ cd Loki-Ngninx-Logql/
 #### 1. Deploy
 ```
 helm repo add nginx-stable https://helm.nginx.com/stable
-helm install ngninx nginx-stable/nginx-ingress --set controller.enableLatencyMetrics=true, prometheus.create=true,controller.config.name=nginx-config
+helm install ngninx nginx-stable/nginx-ingress --set controller.enableLatencyMetrics=true --set prometheus.create=true --set controller.config.name=nginx-config
 ```
 this command will install the nginx controller with configmap named nginx-config
 
@@ -53,7 +53,7 @@ this command will install the nginx controller with configmap named nginx-config
 
 ##### 3. get the ip adress of the ingress gateway
 ```
-IP=$(kubectl get svc ngninx-nginx-ingress -ojson | jq  '.status.loadBalancer.ingress[].ip')
+IP=$(kubectl get svc ngninx-nginx-ingress -ojson | jq -j '.status.loadBalancer.ingress[].ip')
 ```
 ##### 4. update the deployment file
 ```
@@ -134,27 +134,37 @@ kubectl apply -f prometheus/servicemonitor.yaml
 ```
 ### 5. Let's build a dashboard
 
-#### explore the data provided by Loki in Grafana
-In grafana select Explore on the main menu
-Select the datasource Loki . IN the dropdow menu select the label produc -> hipster-shop
-<p align="center"><img src="/image/explore.png" width="60%" alt="grafana explore" /></p>
 
-#### Let's build a query
-Loki has a specific query langage allow you to filter, transform the data and event plot a metric from your logs in a graph.
-Similar to Prometheus you need to :
-* filter using labels : {app="frontend",product="hipster-shop" ,stream="stdout"}
-  we are here only looking at the logs from hipster-shop , app frontend and on the logs pushed in sdout.
-* transform using |
-  for example :
-```
-{namespace="hipster-shop",stream="stdout"} | json | http_resp_took_ms >10
-```
-the first ```|```  specify to Grafana to use the json parser that will extract all the json properties as labels.
-the second ```|``` will filter the logs on the new labels created by the json parser.
-In this example we want to only get the logs where the attribute http.resp.took.ms is above 10ms ( the json parser is replace . by _)
+#### Let's create a dahsboard reporting few metrics related to our Ingress controller
+<p align="center"><img src="image/dashboard.PNG" width="40%" alt="Prometheus Logo" /></p>
 
-We can then extract on field to plot it using all the various [functions available in Grafana](https://grafana.com/docs/loki/latest/logql/)
+##### Health of the ingress
 
-if i want to plot the response time over time i could use the function :
+The Nginx ingress controller expose a metric returning 1 if the ingress is up and 0 if it's down.
+We would utilize this indicator to report the "health" of the ingress controller.
 ```
-rate({namespace="hipster-shop" } |="stdout" !="error" |= "debug" |="http.resp.took_ms" [30s])  ```
+nginx_ingress_nginx_up
+```
+We will use a "Stat" visualization and configure a threshold to change colour of the graph based on the value of the metric:
+* Green will be use if the value is 1
+* Red will be use if the value is 0
+<p align="center"><img src="image/nginx_health.PNG" width="40%" alt="Prometheus Logo" /></p>
+
+##### Number of http request/s
+we will build a graph showing the number of http request/s handeled by the ingress
+here is the promql for the graph:
+```
+  rate(nginx_ingress_nginx_http_requests_total{instance=~"$instance"}[30s])
+```
+##### Number of connections/s
+here is the several promql for each metric: 
+```
+  rate(nginx_ingress_nginx_connections_accepted[30s])
+  rate(nginx_ingress_nginx_connections_handled[30s])
+  rate(nginx_ingress_nginx_connections_waiting[30s])
+```
+##### Response time in ms
+here is the  promql that will show the latency for each upstream; 
+```
+avg(rate(nginx_ingress_controller_upstream_server_response_latency_ms_sum[30s])) by (upstream)
+```
