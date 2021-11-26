@@ -1,7 +1,8 @@
 # Is it Observable?
 <p align="center"><img src="/image/logo.png" width="40%" alt="Prometheus Logo" /></p>
 
-##  How to observe a Ngninx ingress controller using Loki and Prometheus
+##  How to observe a Ngninx ingress controller 
+### Part 1 using Prometheus
 <p align="center"><img src="/image/prometheus.png" width="40%" alt="Prometheus Logo" /></p>
 Repository containing the files for the Episode 11 of Is it Observable : Observability of Nginx Controller using Prometheus
 
