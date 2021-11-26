@@ -24,7 +24,7 @@ add the following line:
 ```yaml
 data:
   log_format: $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent
-    $request_time "upstreamAddress":"$upstream_addr", "upstreamResponseTime":"$upstream_response_time", "proxyHost":"$proxy_host", "upstreamStatus": "$upstream_status" $namespace $ingress_name $service_name
+    $request_time "upstreamAddress":"$upstream_addr", "upstreamResponseTime":"$upstream_response_time", "proxyHost":"$proxy_host", "upstreamStatus": "$upstream_status" "$resource_name" "$resource_type" "$resource_namespace" "$service"'
 ```
 
 ### 2. Install Loki
