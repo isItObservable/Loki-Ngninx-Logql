@@ -23,8 +23,7 @@ kubectl edit cm nginx-config
 add the following line:
 ```yaml
 data:
-  log_format: $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent
-    $request_time "upstreamAddress":"$upstream_addr", "upstreamResponseTime":"$upstream_response_time", "proxyHost":"$proxy_host", "upstreamStatus": "$upstream_status" "$resource_name" "$resource_type" "$resource_namespace" "$service"'
+  log_format: $remote_addr [$time_local] $request $status $body_bytes_sent $request_time $upstream_addr $upstream_response_time $proxy_host $upstream_status $resource_name $resource_type $resource_namespace $service
 ```
 
 ### 2. Install Loki
