@@ -12,5 +12,5 @@ This repository showcase how to observe Nginx Ingress controller by using GKE wi
 This episode expose 3 solutions :
 - 1. Observing your Ingress Controller using [the default Nginx Prometheus exporter](part1.md)
 - 2. [Extending the observability by extracting metrics from the nginx logs using Loki and LogQL](part2.md)
-- 3. Extending the observability by extracting metrics from nginx logs using a log stream pipeline.
+- 3. [Extending the observability by extracting metrics from nginx logs using a log stream pipeline.](part3.md)
 

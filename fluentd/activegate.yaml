@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd-activegate
+  namespace: dynatrace
+spec:
+  ports:
+    - port: 9999
+      protocol: TCP
+      targetPort: 9999
+  selector:
+    component: activegate
+    k8s-app: fluentd-logging
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: activegate-log-ingest
+  namespace: dynatrace
+  labels:
+    component: activegate
+    k8s-app: fluentd-logging
+spec:
+  serviceName: ""
+  selector:
+    matchLabels:
+      component: activegate
+      k8s-app: fluentd-logging
+  template:
+    metadata:
+      labels:
+        component: activegate
+        k8s-app: fluentd-logging
+    spec:
+      serviceAccountName: dynatrace-monitoring
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                  - key: beta.kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+      containers:
+        - name: activegate
+          image: ENVIRONMENT_URL_TO_REPLACE/linux/activegate
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9999
+          env:
+            - name: DT_ID_SEED_NAMESPACE
+              value: dynatrace
+            - name: DT_ID_SEED_K8S_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: fluentd-conf
+                  key: CLUSTER_ID
+          args:
+            - --enable=kubernetes_monitoring,log_analytics_collector
+          livenessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /rest/state
+              port: 9999
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /rest/health
+              port: 9999
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1G
+            requests:
+              cpu: 150m
+              memory: 250M
+      imagePullSecrets:
+        - name: tenant-docker-registry
+  updateStrategy:
+    type: RollingUpdate
