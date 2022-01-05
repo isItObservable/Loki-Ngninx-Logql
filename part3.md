@@ -298,12 +298,6 @@ To force fluentd to take the new configuration , we need to delete the existing 
 kubectl delete pods -n dynatrace -l app=fluentd-pipeline
 ```
 
-#### 11. Let's visualize the data in Dynatrace
-
-##### Prometheus metrics
-
-
-##### Create a metric from the generated logs
 
 
 
