@@ -8,8 +8,8 @@ metadata:
     app: fluentd
     component: fluentd-conf
 data:
-  CLUSTER_ID: "CLUSTER_ID_TO_REPLACE"
-  AG_INGEST_URL: "https://fluentd-activegate:9999/e/ENVIRONMENT_ID_TO_REPLACE/api/v2/logs/ingest"
+  CLUSTER_ID: "a1d81911-b6bf-4f47-874a-41da3fecbc7e"
+  AG_INGEST_URL: "https://fluentd-activegate:9999/e/bix24852/api/v2/logs/ingest"
   fluent.conf: |-
     # Ingest logs from nodes
     <match fluent.**>
@@ -75,6 +75,14 @@ data:
       </metric>
     </filter>
 
+    <filter nginx>
+      @type grep
+        <exclude>
+        key service
+        pattern /^$/
+        # or, to exclude all messages that are empty or include only white-space:
+        </exclude>
+    </filter>
 
     <match nginx>
         @type  stdout

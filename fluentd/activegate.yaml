@@ -58,7 +58,7 @@ spec:
                       - linux
       containers:
         - name: activegate
-          image: ENVIRONMENT_URL_TO_REPLACE/linux/activegate
+          image: bix24852.dev.dynatracelabs.com/linux/activegate
           imagePullPolicy: Always
           ports:
             - containerPort: 9999
